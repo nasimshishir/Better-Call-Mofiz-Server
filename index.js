@@ -20,6 +20,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
     try {
         const serviceCollection = client.db('Legal_Consultant').collection('services');
+        const ordersCollection = client.db('Legal_Consultant').collection('orders')
 
         // Read Services for Homepage===========
 
@@ -47,6 +48,12 @@ async function run() {
             });
 
         // Post Orders from Place Order page===========
+
+        app.post("/orders", async (req, res) => {
+            const order = req.body;
+            const orders = await ordersCollection.insertOne(order);
+            res.send(orders);
+        })
 
 
 
