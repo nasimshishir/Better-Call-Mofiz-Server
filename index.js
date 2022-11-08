@@ -19,54 +19,30 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 async function run() {
     try {
-        const userCollection = client.db('Legal_Consultant').collection('services');
+        const serviceCollection = client.db('Legal_Consultant').collection('services');
 
-        app.get('/users', async (req, res) => {
+        app.get("/servicesForHome", async (req, res) => {
             const query = {};
-            const cursor = userCollection.find(query);
-            const users = await cursor.toArray();
-            res.send(users);
-        });
+            const cursor = serviceCollection.find(query);
+            const services = await cursor.limit(3).toArray();
+            res.send(services)
+        }),
+            app.get("/services", async (req, res) => {
+                const query = {};
+                const cursor = serviceCollection.find(query);
+                const services = await cursor.toArray();
+                res.send(services)
+            }),
 
-        app.get('/users/:id', async (req, res) => {
-            const id = req.params.id;
-            const query = { _id: ObjectId(id) };
-            const user = await userCollection.findOne(query);
-            res.send(user);
-        })
+            app.get("/service/:id", async (req, res) => {
+                const id = req.params.id;
+                const query = { _id: ObjectId(id) };
+                const service = await serviceCollection.findOne(query);
+                res.send(service)
+            });
 
-        app.post('/users', async (req, res) => {
-            const user = req.body;
-            console.log(user);
-            const result = await userCollection.insertOne(user)
-            res.send(result)
-        });
 
-        app.put('/users/:id', async (req, res) => {
-            const id = req.params.id;
-            const filter = { _id: ObjectId(id) };
-            const user = req.body;
-            const option = { upsert: true };
-            const updatedUser = {
-                $set: {
-                    name: user.name,
-                    address: user.address,
-                    email: user.email
-                }
-            }
-            const result = await userCollection.updateOne(filter, updatedUser, option);
-            res.send(result);
-        })
 
-        app.delete('/users/:id', async (req, res) => {
-            const id = req.params.id;
-            // console.log('Trying to delete', id);
-            const query = { _id: ObjectId(id) }
-            const result = await userCollection.deleteOne(query);
-            console.log(result);
-            res.send(result);
-
-        })
     }
 
 
