@@ -21,12 +21,16 @@ async function run() {
     try {
         const serviceCollection = client.db('Legal_Consultant').collection('services');
 
+        // Read Services for Homepage===========
+
         app.get("/servicesForHome", async (req, res) => {
             const query = {};
             const cursor = serviceCollection.find(query);
             const services = await cursor.limit(3).toArray();
             res.send(services)
         }),
+
+            // Read Services for Services page===========
             app.get("/services", async (req, res) => {
                 const query = {};
                 const cursor = serviceCollection.find(query);
@@ -34,12 +38,15 @@ async function run() {
                 res.send(services)
             }),
 
+            // Read Services for Service Details page===========
             app.get("/service/:id", async (req, res) => {
                 const id = req.params.id;
                 const query = { _id: ObjectId(id) };
                 const service = await serviceCollection.findOne(query);
                 res.send(service)
             });
+
+        // Post Orders from Place Order page===========
 
 
 
