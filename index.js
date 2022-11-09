@@ -21,6 +21,7 @@ async function run() {
     try {
         const serviceCollection = client.db('Legal_Consultant').collection('services');
         const ordersCollection = client.db('Legal_Consultant').collection('orders')
+        const reviewsCollection = client.db('Legal_Consultant').collection('reviews')
 
         // Read Services for Homepage===========
 
@@ -45,15 +46,63 @@ async function run() {
                 const query = { _id: ObjectId(id) };
                 const service = await serviceCollection.findOne(query);
                 res.send(service)
-            });
+            }),
 
-        // Post Orders from Place Order page===========
 
-        app.post("/orders", async (req, res) => {
-            const order = req.body;
-            const orders = await ordersCollection.insertOne(order);
-            res.send(orders);
-        })
+            // Post Orders from Place Order page===========
+            app.post("/orders", async (req, res) => {
+                const order = req.body;
+                const orders = await ordersCollection.insertOne(order);
+                res.send(orders);
+
+            }),
+
+            // Read orders list for Added Service Page===========
+            app.get("/orders", async (req, res) => {
+                let query = {};
+                if (req.query.email) {
+                    query = {
+                        email: req.query.email
+                    }
+                }
+                const cursor = ordersCollection.find(query);
+                const services = await cursor.toArray();
+                res.send(services)
+            }),
+
+
+            // Post Reviews from Service Details Page===========
+            app.post("/reviews", async (req, res) => {
+                const review = req.body;
+                const reviews = await reviewsCollection.insertOne(review);
+                res.send(reviews);
+
+            }),
+
+            // Read Reviews from Service Details Page===========
+            app.get("/reviews", async (req, res) => {
+                let query = {};
+                if (req.query.service) {
+                    query = {
+                        forService: req.query.service
+                    }
+                } const cursor = reviewsCollection.find(query);
+                const reviews = await cursor.toArray();
+                res.send(reviews)
+            }),
+
+
+            // Read Reviews from My Reviews Page===========
+            app.get("/reviews", async (req, res) => {
+                let query = {};
+                if (req.query.email) {
+                    query = {
+                        reviewerEmail: req.query.email
+                    }
+                } const cursor = reviewsCollection.find(query);
+                const reviews = await cursor.toArray();
+                res.send(reviews)
+            })
 
 
 
