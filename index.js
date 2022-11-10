@@ -125,15 +125,17 @@ async function run() {
             // Update Review from My Reviews Page and for Good=============
             app.patch("/reviews/:id", async (req, res) => {
                 const id = req.params.id;
+                console.log(id);
                 const filter = { _id: ObjectId(id) };
                 const newReview = req.body;
+                console.log(newReview);
                 const option = { upsert: true };
-                const updateReview = {
+                const updatedReview = {
                     $set: {
-                        review: newReview.review
+                        review: newReview.feedback
                     }
                 }
-                const result = await reviewsCollection.updateOne(filter, updateReview, option);
+                const result = await reviewsCollection.updateOne(filter, updatedReview, option);
                 res.send(result)
             })
 
@@ -156,5 +158,5 @@ app.get("/", (req, res) => {
 })
 
 app.listen(port, () => {
-    console.log('Education Server running on port- ', port);
+    console.log('Assignment 11 Server running on port- ', port);
 })
