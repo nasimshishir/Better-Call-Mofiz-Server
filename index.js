@@ -40,6 +40,13 @@ async function run() {
                 res.send(services)
             }),
 
+            // Post services from uder add service page============
+            app.post("/services", async (req, res) => {
+                const service = req.body;
+                const services = await serviceCollection.insertOne(service);
+                res.send(services)
+            }),
+
             // Read Services for Service Details page===========
             app.get("/service/:id", async (req, res) => {
                 const id = req.params.id;
@@ -48,6 +55,8 @@ async function run() {
                 res.send(service)
             }),
 
+
+            // ORDERS==============================================================
 
             // Post Orders from Place Order page===========
             app.post("/orders", async (req, res) => {
@@ -70,6 +79,8 @@ async function run() {
                 res.send(services)
             }),
 
+
+            // REVIEWS===================================================================
 
             // Post Reviews from Service Details Page===========
             app.post("/reviews", async (req, res) => {
