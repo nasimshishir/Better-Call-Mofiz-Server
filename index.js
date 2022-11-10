@@ -102,15 +102,40 @@ async function run() {
                 } const cursor = reviewsCollection.find(query);
                 const reviews = await cursor.toArray();
                 res.send(reviews)
-            })
+            }),
 
-        // Delete Review from My Reviews Page=============
-        app.delete("/reviews/:id", async (req, res) => {
-            const id = req.params.id;
-            const query = { _id: ObjectId(id) }
-            const result = await reviewsCollection.deleteOne(query);
-            res.send(result)
-        })
+
+            // Read Reviews from My Reviews Update Page===========
+            app.get("/reviews/:id", async (req, res) => {
+                const id = req.params.id;
+                const query = { _id: ObjectId(id) };
+                const reviews = await reviewsCollection.findOne(query);
+                res.send(reviews)
+            }),
+
+
+            // Delete Review from My Reviews Page and for Good=============
+            app.delete("/reviews/:id", async (req, res) => {
+                const id = req.params.id;
+                const query = { _id: ObjectId(id) }
+                const result = await reviewsCollection.deleteOne(query);
+                res.send(result)
+            }),
+
+            // Update Review from My Reviews Page and for Good=============
+            app.patch("/reviews/:id", async (req, res) => {
+                const id = req.params.id;
+                const filter = { _id: ObjectId(id) };
+                const newReview = req.body;
+                const option = { upsert: true };
+                const updateReview = {
+                    $set: {
+                        review: newReview.review
+                    }
+                }
+                const result = await reviewsCollection.updateOne(filter, updateReview, option);
+                res.send(result)
+            })
 
 
 
